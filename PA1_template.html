@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Vijay Gurram" />
+
+
+<title>Reproducible Research - Course Project 1</title>
+
+<script src="PA1_template_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="PA1_template_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="PA1_template_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="PA1_template_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="PA1_template_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="PA1_template_files/navigation-1.1/tabsets.js"></script>
+<link href="PA1_template_files/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="PA1_template_files/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Reproducible Research - Course Project 1</h1>
+<h4 class="author"><em>Vijay Gurram</em></h4>
+<h4 class="date"><em>3 October 2017</em></h4>
+
+</div>
+
+
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE)</code></pre>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This document is generated as part of the assignment for the Coursera course <strong>Reproducible Research</strong>. This document contains the description of the assignment and the procedure that is followed to address the questions by showing the results and the corresponding the code that produced those results together.</p>
+<p>This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals throughout the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.</p>
+<p>Please refer to the <strong>Readme</strong> document for the details of the assignment along with the questions that we are trying to address.</p>
+<p><em>Note: Please ensure the data file is available in the present working directory</em></p>
+<div id="loading-the-necessary-packages" class="section level3">
+<h3>Loading the necessary packages</h3>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.4.1</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(knitr)
+library(ggplot2)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.4.1</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## Warning: package &#39;lubridate&#39; was built under R version 3.4.1</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+</div>
+<div id="loading-the-data-file-and-checking-the-contents" class="section level3">
+<h3>Loading the data file and checking the contents</h3>
+<pre class="r"><code>activityData &lt;- read.csv(&quot;activity.csv&quot;, header = TRUE)
+summary(activityData)</code></pre>
+<pre><code>##      steps                date          interval     
+##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
+##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
+##  Median :  0.00   2012-10-03:  288   Median :1177.5  
+##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
+##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
+##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
+##  NA&#39;s   :2304     (Other)   :15840</code></pre>
+<pre class="r"><code>str(activityData)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Factor w/ 61 levels &quot;2012-10-01&quot;,&quot;2012-10-02&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...</code></pre>
+<pre class="r"><code>head(activityData)</code></pre>
+<pre><code>##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25</code></pre>
+<pre class="r"><code>tail(activityData)</code></pre>
+<pre><code>##       steps       date interval
+## 17563    NA 2012-11-30     2330
+## 17564    NA 2012-11-30     2335
+## 17565    NA 2012-11-30     2340
+## 17566    NA 2012-11-30     2345
+## 17567    NA 2012-11-30     2350
+## 17568    NA 2012-11-30     2355</code></pre>
+<p>As now we have understood the data, let’s proceed with the questions.</p>
+<p><strong>Proceeding to address the questions now…</strong></p>
+</div>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level3">
+<h3>What is mean total number of steps taken per day?</h3>
+<p>For this part of the assignment the missing values can be ignored.</p>
+<p><em>1.Calculate the total number of steps taken per day.</em></p>
+<pre class="r"><code>stepsbyDate &lt;- activityData %&gt;% filter(!is.na(steps)) %&gt;% group_by(date) %&gt;% 
+    summarise(steps = sum(steps)) %&gt;% print(stepsbyDate)</code></pre>
+<pre><code>## Warning: package &#39;bindrcpp&#39; was built under R version 3.4.1</code></pre>
+<pre><code>## # A tibble: 53 x 2
+##          date steps
+##        &lt;fctr&gt; &lt;int&gt;
+##  1 2012-10-02   126
+##  2 2012-10-03 11352
+##  3 2012-10-04 12116
+##  4 2012-10-05 13294
+##  5 2012-10-06 15420
+##  6 2012-10-07 11015
+##  7 2012-10-09 12811
+##  8 2012-10-10  9900
+##  9 2012-10-11 10304
+## 10 2012-10-12 17382
+## # ... with 43 more rows</code></pre>
+<p><em>2.Make a histogram of the total number of steps taken each day.</em></p>
+<pre class="r"><code>ggplot(stepsbyDate, aes(x = steps)) + geom_histogram(col=&quot;red&quot;, fill=&quot;green&quot;, alpha = .2, binwidth = 1000) +
+  labs(title = &quot;Histogram of Steps per day&quot;, x = &quot;Steps per day&quot;, y = &quot;Frequency&quot;)</code></pre>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-3-1.png" /><!-- --></p>
+<p><em>3.Calculate and report the mean and median of the total number of steps taken per day.</em></p>
+<pre class="r"><code>meanSteps &lt;- mean(stepsbyDate$steps, na.rm = TRUE)
+print( meanSteps)</code></pre>
+<pre><code>## [1] 10766.19</code></pre>
+<pre class="r"><code>medianSteps &lt;- median(stepsbyDate$steps, na.rm = TRUE)
+print(medianSteps)</code></pre>
+<pre><code>## [1] 10765</code></pre>
+<p>Mean steps taken = <strong>10766</strong></p>
+<p>Median steps taken = <strong>10765</strong></p>
+</div>
+<div id="what-is-the-average-daily-activity-pattern" class="section level3">
+<h3>What is the average daily activity pattern?</h3>
+<p><em>1.Make a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)</em></p>
+<pre class="r"><code>interval &lt;- activityData %&gt;% filter(!is.na(steps)) %&gt;% group_by(interval) %&gt;%
+  summarize(steps = mean(steps))
+
+ggplot(interval, aes(x=interval, y=steps)) +
+  geom_line(color = &quot;red&quot;)</code></pre>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-5-1.png" /><!-- --></p>
+<p><em>2.Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?</em></p>
+<pre class="r"><code>maxInterval &lt;- interval[which.max(interval$steps),]
+print(maxInterval)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   interval    steps
+##      &lt;int&gt;    &lt;dbl&gt;
+## 1      835 206.1698</code></pre>
+<p>The interval <strong>835</strong> contains maximum number of steps.</p>
+</div>
+<div id="imputing-missing-values" class="section level3">
+<h3>Imputing missing values</h3>
+<p>Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.</p>
+<p><em>1.Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</em></p>
+<pre class="r"><code>mv &lt;- sum(is.na(activityData$steps))
+print(mv)</code></pre>
+<pre><code>## [1] 2304</code></pre>
+<p>We have a total of <strong>2304</strong> missing values in the dataset.</p>
+<p><em>2.Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</em></p>
+<p>We will use <strong>mean for that 5-minute interval</strong> to fill the missing value</p>
+<p><em>3.Create a new dataset that is equal to the original dataset but with the missing data filled in.</em></p>
+<pre class="r"><code>nomvData &lt;- activityData
+mv &lt;- is.na(activityData$steps)
+avg_interval &lt;- tapply(nomvData$steps, nomvData$interval, mean, na.rm=TRUE, simplify=TRUE)
+nomvData$steps[mv] &lt;- avg_interval[as.character(nomvData$interval[mv])]</code></pre>
+<p>and check whether the filling action is successful</p>
+<pre class="r"><code>mv &lt;- sum(is.na(nomvData$steps))
+print(mv)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>As we see there are no missing values in the dataset.</p>
+<p><em>4.Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</em></p>
+<pre class="r"><code>nomvSteps &lt;- nomvData %&gt;%
+  filter(!is.na(steps)) %&gt;%
+  group_by(date) %&gt;%
+  summarize(steps = sum(steps)) %&gt;%
+  print(nomvSteps)</code></pre>
+<pre><code>## # A tibble: 61 x 2
+##          date    steps
+##        &lt;fctr&gt;    &lt;dbl&gt;
+##  1 2012-10-01 10766.19
+##  2 2012-10-02   126.00
+##  3 2012-10-03 11352.00
+##  4 2012-10-04 12116.00
+##  5 2012-10-05 13294.00
+##  6 2012-10-06 15420.00
+##  7 2012-10-07 11015.00
+##  8 2012-10-08 10766.19
+##  9 2012-10-09 12811.00
+## 10 2012-10-10  9900.00
+## # ... with 51 more rows</code></pre>
+<pre class="r"><code>ggplot(nomvSteps, aes(x = steps)) + 
+  geom_histogram(col=&quot;red&quot;, fill=&quot;blue&quot;, alpha = .2, binwidth = 1000) +
+  labs(title = &quot;Histogram of Steps per day, without any missing values&quot;, x = &quot;Steps per day&quot;, y = &quot;Frequency&quot;)</code></pre>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-10-1.png" /><!-- --></p>
+<p>calculating the mean and median for the no missing value dataset</p>
+<pre class="r"><code>meanSteps &lt;- mean(nomvSteps$steps, na.rm = TRUE)
+print( meanSteps)</code></pre>
+<pre><code>## [1] 10766.19</code></pre>
+<pre class="r"><code>medianSteps &lt;- median(nomvSteps$steps, na.rm = TRUE)
+print(medianSteps)</code></pre>
+<pre><code>## [1] 10766.19</code></pre>
+<p>Mean steps taken = <strong>10766</strong></p>
+<p>Median steps taken = <strong>10766</strong></p>
+<p><em>The impact of inputting the missing data is that value of both mean and median become same.</em></p>
+</div>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level3">
+<h3>Are there differences in activity patterns between weekdays and weekends?</h3>
+<p>For this part the weekdays() function may be of some help here. Use the dataset with the filled-in missing values for this part.</p>
+<p><em>1.Create a new factor variable in the dataset with two levels - “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.</em></p>
+<pre class="r"><code>nomvData &lt;- mutate(nomvData, weektype = ifelse(weekdays(as.POSIXct(nomvData$date)) == &quot;Saturday&quot; | weekdays(as.POSIXct(nomvData$date)) == &quot;Sunday&quot;, &quot;weekend&quot;, &quot;weekday&quot;))
+nomvData$weektype &lt;- as.factor(nomvData$weektype)
+head(nomvData)</code></pre>
+<pre><code>##       steps       date interval weektype
+## 1 1.7169811 2012-10-01        0  weekday
+## 2 0.3396226 2012-10-01        5  weekday
+## 3 0.1320755 2012-10-01       10  weekday
+## 4 0.1509434 2012-10-01       15  weekday
+## 5 0.0754717 2012-10-01       20  weekday
+## 6 2.0943396 2012-10-01       25  weekday</code></pre>
+<p><em>2.Make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</em></p>
+<pre class="r"><code>byInterval &lt;- nomvData %&gt;%
+  group_by(interval, weektype) %&gt;%
+  summarise(steps = mean(steps))</code></pre>
+<pre class="r"><code>ggplot(byInterval, aes(x=interval, y=steps, color = weektype)) + geom_line() +
+   facet_wrap(~weektype, ncol = 1, nrow=2)</code></pre>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-14-1.png" /><!-- --></p>
+<p><strong>From these two plots it is observed that there is more activity during the weekend than the weekday.</strong></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
